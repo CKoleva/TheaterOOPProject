@@ -5,6 +5,10 @@ Date::Date(size_t day, size_t month, size_t year)
     : year(year), month(month), day(day) {
 }
 
+Date::Date(const string dateStr) {
+    this->deserialize(dateStr);
+}
+
 int Date::getYear() const {
     return year;
 }

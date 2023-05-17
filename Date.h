@@ -12,6 +12,7 @@ private:
 
 public:
     Date(size_t day, size_t month, size_t year);
+    Date(const string dateStr);
 
     // Getters
     int getYear() const;

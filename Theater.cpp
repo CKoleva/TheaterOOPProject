@@ -1,6 +1,7 @@
 #include "Theater.h"
 #include <iostream>
 #include <locale>
+#include <algorithm>
 
 void Theater::addHall(Hall* hall) {
     halls.push_back(hall->clone());
@@ -26,25 +27,25 @@ Theater* Theater::getInstance() {
     return instance;
 }
 
-void Theater::addEvent(const Date& date, const std::string& hallName, const std::string& eventName) {
-    // Find the hall by name
-    Hall* hall = findHallByName(hallName);
-    if (hall == nullptr) {
-        throw std::runtime_error("Hall not found.");
-    }
+// Getters
+const std::vector<Hall*>& Theater::getHalls() const {
+    return halls;
+}
 
-    // Check if the hall is free on this date
-    for (const Event* event : events) {
-        if (event->getDate() == date && event->getHallName() == hallName) {
-            throw std::runtime_error("Event already exists with on this date and in this hall.");
-        }
-    }
+const std::vector<Event*>& Theater::getEvents() const {
+    return events;
+}
 
-    // Create a new Event object
-    Event* event = new Event(eventName, date, hallName);
+const std::vector<BookedTicket*>& Theater::getBookedTickets() const {
+    return bookedTickets;
+}
 
-    // Add the event to the events vector
-    events.push_back(event);
+const std::vector<Ticket*>& Theater::getFreeTickets() const {
+    return freeTickets;
+}
+
+const std::vector<PurchasedTicket*>& Theater::getPurchasedTickets() const {
+    return purchasedTickets;
 }
 
 Event* Theater::findEvent(const Event& event) const {
@@ -65,6 +66,15 @@ Hall* Theater::findHallByName(const std::string& name) const {
     return nullptr;
 }
 
+void Theater::removeFreeTicket(const Event& event, size_t row, size_t seat) {
+    for (auto it = freeTickets.begin(); it != freeTickets.end(); ++it) {
+        if ((*it)->getEvent() == event && (*it)->getRow() == row && (*it)->getSeat() == seat) {
+            delete *it;
+            freeTickets.erase(it);
+            break;
+        }
+    }
+}
 
 bool Theater::isSeatAvailable(const Event& event, size_t row, size_t seat) const {
     // Check if the event exists
@@ -94,6 +104,37 @@ bool Theater::isSeatAvailable(const Event& event, size_t row, size_t seat) const
     return false; // Seat is not available
 }
 
+bool Theater::validateUniqueCode(const string& code) const {
+    for (const PurchasedTicket* ticket : purchasedTickets) {
+        if (ticket->getUniqueCode() == code) {
+            return true; // Code is not unique
+        }
+    }
+    return false; // Code is unique
+}
+
+void Theater::addEvent(const Date& date, const std::string& hallName, const std::string& eventName) {
+    // Find the hall by name
+    Hall* hall = findHallByName(hallName);
+    if (hall == nullptr) {
+        throw std::runtime_error("Hall not found.");
+    }
+
+    // Check if the hall is free on this date
+    for (const Event* event : events) {
+        if (event->getDate() == date && event->getHallName() == hallName) {
+            throw std::runtime_error("Event already exists with on this date and in this hall.");
+        }
+    }
+
+    // Create a new Event object
+    Event* event = new Event(eventName, date, hallName);
+
+    // Add the event to the events vector
+    events.push_back(event);
+}
+
+
 bool Theater::bookTicket(const Event& event, size_t row, size_t seat, const string note) {
     if (isSeatAvailable(event, row, seat)) {
         // Seat is available, create a new BookedTicket object
@@ -108,13 +149,7 @@ bool Theater::bookTicket(const Event& event, size_t row, size_t seat, const stri
         bookedTickets.insert(bookedTickets.begin() + i, toBook);            //why not clone()
 
         // Remove the ticket from the freeTickets vector
-        for (auto it = freeTickets.begin(); it != freeTickets.end(); ++it) {
-            if ((*it)->getEvent() == event && (*it)->getRow() == row && (*it)->getSeat() == seat) {
-                delete *it;
-                freeTickets.erase(it);
-                break;
-            }
-        }
+        removeFreeTicket(event, row, seat);
 
         std::cout << "Ticket booked successfully." << std::endl;
         return true; // Ticket booked successfully
@@ -133,13 +168,8 @@ bool Theater::purchaseTicket(const Event& event, size_t row, size_t seat) {
         purchasedTickets.push_back(purchasedTicket);                    //why not clone()
 
         // Remove the Ticket from the freeTickets vector
-        for (auto it = freeTickets.begin(); it != freeTickets.end(); ++it) {
-            if ((*it)->getEvent() == event && (*it)->getRow() == row && (*it)->getSeat() == seat) {
-                delete *it;
-                freeTickets.erase(it);
-                break;
-            }
-        }
+        removeFreeTicket(event, row, seat);
+
         std::cout << "Ticket purchased successfully." << std::endl;
         return true; // Ticket purchased successfully
     }
@@ -169,8 +199,8 @@ bool Theater::unbookTicket(const Event& event, size_t row, size_t seat) {
     BookedTicket* bookedTicket = nullptr;
     for (size_t i = 0; i < bookedTickets.size(); ++i) {
         BookedTicket* ticket = bookedTickets[i];
-        if (ticket->getEvent() == *foundEvent && ticket->getRow() == row && ticket->getSeat() == seat) {
-            bookedTicket = ticket;
+        if (ticket->getEvent() == *foundEvent && ticket->getRow() == row && ticket->getSeat() == seat) {    //may need a function
+            bookedTicket = ticket;                                                                          //also used for purchasing
             bookedTickets.erase(bookedTickets.begin() + i);
             break;
         }
@@ -187,14 +217,6 @@ bool Theater::unbookTicket(const Event& event, size_t row, size_t seat) {
     return true;
 }
 
-bool Theater::validateUniqueCode(const string& code) const {
-    for (const PurchasedTicket* ticket : purchasedTickets) {
-        if (ticket->getUniqueCode() == code) {
-            return true; // Code is not unique
-        }
-    }
-    return false; // Code is unique
-}
 
 void Theater::check(const string& code) const {
     if (code.size() != 14 || code.substr(0, 2) != "TR")
@@ -229,8 +251,8 @@ void Theater::check(const string& code) const {
     
 }
 
-void Theater::displayAvailableSeats(const Event& event, const Date& date) {
-    // Find the event
+void Theater::displayAvailableSeats(const Event& event, const Date& date) const {            //date is not needed as parameter
+    // Find the event                                                                  //maybe engine does the work and passes only event
     Event* foundEvent = findEvent(event);
     if (foundEvent == nullptr) {
     throw std::runtime_error("Event not found.");
@@ -245,7 +267,7 @@ void Theater::displayAvailableSeats(const Event& event, const Date& date) {
     }
 }
 
-void Theater::displayBookings(const Event& event, const Date& date) {
+void Theater::displayBookings(const Event& event, const Date& date) const {       //too much similar code
     // Find the event
     Event* foundEvent = findEvent(event);
     if (foundEvent == nullptr) {
@@ -261,10 +283,10 @@ void Theater::displayBookings(const Event& event, const Date& date) {
     }
 }
 
-void Theater::displayBookings(const Date& date) {
+void Theater::displayBookings(const Date& date) const {
     std::cout << "Bookings on " << date.serialize() << ":" << std::endl;            // needes check first
-
-    for (const auto& ticket : bookedTickets) {
+                                                                                    
+    for (const auto& ticket : bookedTickets) {                                      //sorted by events?
         if (ticket->getEvent().getDate() == date) {
             ticket->printTicket();
         }
