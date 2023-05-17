@@ -1,12 +1,12 @@
 {
     "halls": [
       {
-        "name": "Hall A",
+        "name": "A",
         "numRows": 10,
         "numSeats": 15
       },
       {
-        "name": "Hall B",
+        "name": "B",
         "numRows": 8,
         "numSeats": 12
       }
@@ -14,7 +14,12 @@
     "events": [
       {
         "date": "2022-02-02",
-        "hallName": "Hall B",
+        "hallName": "B",
+        "eventName": "Snowwhite"
+      },
+      {
+        "date": "2022-01-01",
+        "hallName": "B",
         "eventName": "Snowwhite"
       }
     ],
@@ -22,29 +27,19 @@
       {
         "row": 5,
         "seat": 10,
-        "event": "Event X",
-        "note": "Special request"
-      },
-      {
-        "row": 3,
-        "seat": 7,
-        "event": "Event Y",
-        "note": ""
+        "note": "Special request",
+        "date": "2022-02-02",
+        "eventName": "Event X",
+        "hallName":"B"
       }
     ],
     "purchasedTickets": [
       {
         "row": 6,
         "seat": 12,
-        "event": "Event Z",
-        "code": "TR123SD456"
-      }
-    ],
-    "freeTickets": [
-      {
-        "row": 2,
-        "seat": 5,
-        "event" :"Event Y"
+        "eventName": "Event Z",
+        "hallName": "A",
+        "date": "2022-01-01"
       }
     ]
   }

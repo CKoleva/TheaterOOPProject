@@ -8,6 +8,8 @@
 class  Engine {
 private:
     static const size_t commandsCount = 17;
+
+    string currentFileName;
     
     Theater* theater = Theater::getInstance();
     bool endProgram;  //if the program should end

@@ -1,102 +1,77 @@
 #include "FileReader.h"
 
-
-void FileReader::loadTheaterData(Theater& theater, const std::string& filename) {  //can be separated in smaller functions
-    std::ifstream file(filename);                                                   //similar code when loading tickets
-    if (!file.is_open()) {
-        throw std::runtime_error("Failed to open the file: " + filename);
-    }
-    json jsonData;
-    file >> jsonData;
-    file.close();
-    // Load halls
+void FileReader::loadHalls(Theater& theater, const nlohmann::json& jsonData) {
     for (const auto& hallData : jsonData["halls"]) {
         std::string name = hallData["name"];
         size_t numRows = hallData["numRows"];
         size_t numSeats = hallData["numSeats"];
-        Hall* hall = new Hall(name, numRows, numSeats);     // should it create an object and pass it to addHall
+        Hall* hall = new Hall(name, numRows, numSeats);
         theater.addHall(hall);
     }
+}
 
-    // Load events
+void FileReader::loadEvents(Theater& theater, const nlohmann::json& jsonData) {
     for (const auto& eventData : jsonData["events"]) {
         Date date(eventData["date"]);
         std::string hallName = eventData["hallName"];
         std::string eventName = eventData["eventName"];
         theater.addEvent(date, hallName, eventName);
     }
+}
 
-    // Load booked tickets
+void FileReader::loadBookedTickets(Theater& theater, const nlohmann::json& jsonData) {
     for (const auto& bookedTicketData : jsonData["bookedTickets"]) {
         size_t row = bookedTicketData["row"];
         size_t seat = bookedTicketData["seat"];
-        std::string eventName = bookedTicketData["event"];
         std::string note = bookedTicketData["note"];
+        std::string eventName = bookedTicketData["eventName"];
+        std::string hallName = bookedTicketData["hallName"];
+        Date date(bookedTicketData["date"]);
         
-        // Find the event by name
-        Event* foundEvent = nullptr;
-        for (const auto& event : theater.events) {
-            if (event->getName() == eventName) {
-                foundEvent = event;
-                break;
-            }
-        }
+        Event event(eventName, date, hallName);
+        Event* found = theater.findEvent(event);
         
-        if (foundEvent) {
-            theater.bookTicket(*foundEvent, row, seat, note);
-        } else {
-            // Ignore the ticket
-        }
-    }
-
-    // Load purchased tickets
-     for (const auto& purchasedTicketData : jsonData["purchasedTickets"]) {
-        size_t row = purchasedTicketData["row"];
-        size_t seat = purchasedTicketData["seat"];
-        std::string eventName = purchasedTicketData["event"];
-        std::string code = purchasedTicketData["code"];
-        
-        // Find the event by name
-        Event* foundEvent = nullptr;
-        for (const auto& event : theater.events) {
-            if (event->getName() == eventName) {
-                foundEvent = event;
-                break;
-            }
-        }
-        
-        if (foundEvent) {
-            theater.purchaseTicket(*foundEvent, row, seat);
-            PurchasedTicket* purchasedTicket = theater.getPurchasedTicket(row, seat, *foundEvent); //something more optimized here 
-            if (purchasedTicket) {
-                purchasedTicket->setCode(code);
-            }
-        } else {
-            // Ignore the ticket
-        }
-    }
-
-    // Load free tickets
-    for (const auto& freeTicketData : jsonData["freeTickets"]) {
-        size_t row = freeTicketData["row"];
-        size_t seat = freeTicketData["seat"];
-        std::string eventName = freeTicketData["event"];        
-        
-        // Find the event by name
-        Event* foundEvent = nullptr;
-        for (const auto& event : theater.events) {
-            if (event->getName() == eventName) {
-                foundEvent = event;
-                break;
-            }
-        }        
-        
-        if (foundEvent) {
-            Ticket* ticket = new Ticket(row, seat, *foundEvent);
-            theater.addFree(ticket);
+        if (found != nullptr) {
+            theater.bookTicket(event, row, seat, note);
         } else {
             // Ignore the ticket
         }
     }
 }
 
+void FileReader::loadPurchasedTickets(Theater& theater, const nlohmann::json& jsonData) {
+    for (const auto& purchasedTicketData : jsonData["purchasedTickets"]) {
+        size_t row = purchasedTicketData["row"];
+        size_t seat = purchasedTicketData["seat"];
+        std::string eventName = purchasedTicketData["eventName"];
+        std::string hallName = purchasedTicketData["hallName"];
+        Date date = purchasedTicketData["date"];
+        
+        Event event(eventName, date, hallName);
+        Event* found = theater.findEvent(event);
+
+        if (found != nullptr) {
+            theater.purchaseTicket(event, row, seat);
+        } else {
+            // Ignore the ticket
+        }
+    }
+}
+
+void FileReader::loadTheaterData(Theater& theater, const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open the file: " + filename);
+    }
+    nlohmann::json jsonData;
+    file >> jsonData;
+    file.close();
+
+    loadHalls(theater, jsonData);
+    loadEvents(theater, jsonData);
+
+    makeAllTicketsFree(theater);
+
+    loadBookedTickets(theater, jsonData);
+    loadPurchasedTickets(theater, jsonData);
+}
