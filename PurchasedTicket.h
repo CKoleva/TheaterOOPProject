@@ -11,7 +11,7 @@ private:
 public:
     PurchasedTicket(size_t row, size_t seat, const Event& event); //parametric constructor
 
-    Ticket* clone() override final;
+    PurchasedTicket* clone() override final;
 
     const string getUniqueCode() const; //getter for the unique code
 };

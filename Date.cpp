@@ -63,4 +63,29 @@ void Date::deserialize(const string& data) {
     stringstream ss(data);
     char delimiter;
     ss >> this->year >> delimiter >> this->month >> delimiter >> this->day;
-}    
+
+    // Check if the date string is valid
+    if (ss.fail() || delimiter != '-' || !isValidDate()) {
+        throw std::runtime_error("Invalid date string: " + data);
+    }
+}
+
+bool Date::isValidDate() const {
+    // Check if the year, month, and day values are within valid ranges
+    if (year < 0 || month < 1 || month > 12 || day < 1 || day > 31) {
+        return false;
+    }
+
+    // Check for leap years
+    bool isLeapYear = (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+    if (month == 2 && (isLeapYear && day > 29 || !isLeapYear && day > 28)) {
+        return false;
+    }
+
+    // Check for months with 30 days
+    if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30) {
+        return false;
+    }
+
+    return true;
+}

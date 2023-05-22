@@ -10,6 +10,7 @@ private:
     int month;
     int day;
 
+    bool isValidDate() const;
 public:
     Date(size_t day, size_t month, size_t year);
     Date(const string dateStr);

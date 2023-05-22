@@ -16,7 +16,7 @@ const std::string& Event::getHallName() const {
 }
 
 bool Event::operator==(const Event& other) const {
-    return name == other.name && date == other.date && hallName == other.hallName;
+    return name == other.name && date == other.date;    //no need to ckeck hall because an event can only be in one hall per day
 }
 
 Event* Event::clone() {

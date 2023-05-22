@@ -21,4 +21,5 @@ public:
     virtual Ticket* clone();
 
     virtual ~Ticket() = default;
+    virtual bool operator==(const Ticket& other);
 };

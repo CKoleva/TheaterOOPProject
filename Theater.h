@@ -15,10 +15,9 @@ private:
     std::vector<PurchasedTicket*> purchasedTickets; //vector of pointers to purchased tickets
     std::vector<Ticket*> freeTickets; //vector of pointers to free tickets
 
-    void free(); //deallocate memory
-    bool isSeatAvailable(const Event& event, size_t row, size_t seat) const; //helper fuction to check availability
+    bool isSeatAvailable(const Event& event, const size_t row, const size_t seat) const; //helper fuction to check availability
     bool validateUniqueCode(const string& code) const; //hepler function to check code
-    Event* findEvent(const Event& event) const;     //helper function to find Event in events vector
+    Event* findEvent(const string& eventName, const Date& date) const;     //helper function to find Event in events vector
     Hall* findHallByName(const std::string& name) const;   //hepler function to find Hall
     void removeFreeTicket(const Event& event, size_t row, size_t seat); //hepler function to remove ticket from freeTickets vector
 
@@ -35,7 +34,6 @@ public:
 
     // FileReader-related methods
     void addHall(Hall* hall);
-    Event& getEvent(const size_t idx) const;
     void addFree(Ticket* t);
 
     // For Singleton design pattern
@@ -48,19 +46,21 @@ public:
     void addEvent(const Date& date, const std::string& hallName, const std::string& eventName);
 
     // Ticket-related methods
-    bool bookTicket(const Event& event, size_t row, size_t seat, const string note);
-    bool purchaseTicket(const Event& event, size_t row, size_t seat);
-    bool unbookTicket(const Event& event, size_t row, size_t seat);
+    void bookTicket(const size_t row, const size_t seat, const Date& date, const string& eventName, const string note);
+    void purchaseTicket(const size_t row, const size_t seat, const Date& date, const string& eventName);
+    void unbookTicket(const size_t row, const size_t seat, const Date& date, const string& eventName);
     void check(const string& code) const;
-    void displayBookings(const Event& event,const Date& date) const;
+    void displayBookings(const Date& date, const string& eventName) const;
     void displayBookings(const Date& date) const;
-    void displayAvailableSeats(const Event& event, const Date& date) const;
-    void report(const Date& from, const Date& to) const;
-    void report(const Date& from, const Date& to, const Hall& hall) const;
+    void displayBookings(const string& eventName) const;
+    void displayAvailableSeats(const string& eventName, const Date& date) const;
+    // void report(const Date& from, const Date& to) const;
+    // void report(const Date& from, const Date& to, const string& hallName) const;
 
     //friend function for FileReader
-    friend void makeAllTicketsFree(Theater& theater);
+    friend void makeAllTicketsFree(Theater* theater);
 
+    void free(); //deallocate memory public because it will be handled by Engine
     ~Theater();
 
     friend class FileReader;

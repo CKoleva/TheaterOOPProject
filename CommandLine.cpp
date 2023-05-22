@@ -114,3 +114,7 @@ void CommandLine::parseCommandLine(string commandLine) {
 vector<string> CommandLine::getArgv() {
     return this->argv;
 }
+
+size_t CommandLine::getSize() const {
+    return this->argv.size();
+}

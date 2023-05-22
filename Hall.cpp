@@ -1,4 +1,5 @@
 #include "Hall.h"
+#include <iostream>
 
 Hall::Hall(const string name,const size_t rows,const size_t seats) : Venue(name), numberOfRows(rows), numberOfSeats(seats) {}
 

@@ -2,18 +2,20 @@
 #include <fstream>
 #include <iostream>
 #include "Theater.h"
-#include "C:/Users/Laptop/Downloads/json.hpp"
+#include "C:/Users/Laptop/Downloads/nlohmann.json/json.hpp"
+
+using nlohmann::json;
 
 class FileReader {
 private:
    // Helper functions
-   void loadHalls(Theater& theater, const nlohmann::json& jsonData);
-   void loadEvents(Theater& theater, const nlohmann::json& jsonData);
-   void loadBookedTickets(Theater& theater, const nlohmann::json& jsonData);
-   void loadPurchasedTickets(Theater& theater, const nlohmann::json& jsonData);
+   static void loadHalls(Theater* theater, json& jsonData);
+   static void loadEvents(Theater* theater, json& jsonData);
+   static void loadBookedTickets(Theater* theater, json& jsonData);
+   static void loadPurchasedTickets(Theater* theater, json& jsonData);
 
 public:
    // Main function for loading data
-   static void loadTheaterData(Theater& theater, const std::string& filename);
+   static void loadTheaterData(Theater* theater, std::fstream& file);      //make it use Theater*
 };
 

@@ -16,7 +16,7 @@ std::string PurchasedTicket::generateUniqueCode(size_t row, size_t seat) {
     return oss.str();
 }
 
-Ticket* PurchasedTicket::clone() {
+PurchasedTicket* PurchasedTicket::clone() {
     return new PurchasedTicket(*this);
 }
 

@@ -1,0 +1,16 @@
+{
+    "halls": [
+        { "name": "10",
+          "numRows": 4,
+          "numSeats": 5 },
+          { "name": "20",
+          "numRows": 5,
+          "numSeats": 5 },
+          { "name": "30",
+          "numRows": 6,
+          "numSeats": 4 },
+          { "name": "40",
+          "numRows": 4,
+          "numSeats": 4 }
+    ]
+}

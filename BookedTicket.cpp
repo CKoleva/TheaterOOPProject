@@ -8,6 +8,6 @@ const string& BookedTicket::getNote() const {
 BookedTicket::BookedTicket(int row, int seat, const Event& event, const string note)
     : Ticket(row, seat, event) , note(note) {}
 
-Ticket* BookedTicket::clone() {
+BookedTicket* BookedTicket::clone() {
     return new BookedTicket(*this);
 }

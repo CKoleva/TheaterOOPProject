@@ -7,7 +7,7 @@ private:
 public:
     BookedTicket(int row, int seat, const Event& event, const string note); //parametric constructor
 
-    Ticket* clone() override final;
+    BookedTicket* clone() override final;
 
     //Getter
     const string& getNote() const;
