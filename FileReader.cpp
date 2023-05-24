@@ -7,7 +7,6 @@ void FileReader::loadHalls(Theater* theater, json& jsonData) {
         size_t numSeats = hallData["numSeats"];
         Hall* hall = new Hall(name, numRows, numSeats);
         theater->addHall(hall);
-        std::cout << "in add hall";
     }
 }
 
@@ -27,7 +26,6 @@ void FileReader::loadBookedTickets(Theater* theater, json& jsonData) {
         string eventName = bookedTicketData["eventName"];
         Date date(bookedTicketData["date"]);
         string note = bookedTicketData["note"];
-        
         
         theater->bookTicket(row, seat, date, eventName, note);
     }
@@ -57,7 +55,6 @@ void FileReader::loadTheaterData(Theater* theater, std::fstream& file) {
         loadEvents(theater, jsonData);
         makeAllTicketsFree(theater);
     }
-
 
     if (jsonData.contains("bookedTickets")) {
         loadBookedTickets(theater, jsonData);

@@ -1,46 +1,45 @@
 {
-    "halls": [
-      {
-        "name": "A",
-        "numRows": 10,
-        "numSeats": 15
-      },
-      {
-        "name": "B",
-        "numRows": 8,
-        "numSeats": 12
-      }
-    ],
-    "events": [
-      {
-        "date": "2022-02-02",
-        "hallName": "B",
-        "eventName": "Snowwhite"
-      },
-      {
-        "date": "2022-01-01",
-        "hallName": "B",
-        "eventName": "Snowwhite"
-      }
-    ],
-    "bookedTickets": [
-      {
-        "row": 5,
-        "seat": 10,
-        "note": "Special request",
-        "date": "2022-02-02",
-        "eventName": "Event X",
-        "hallName":"B"
-      }
-    ],
-    "purchasedTickets": [
-      {
-        "row": 6,
-        "seat": 12,
-        "eventName": "Event Z",
-        "hallName": "A",
-        "date": "2022-01-01"
-      }
-    ]
-  }
-  
+  "halls": [
+    {
+      "name": "A",
+      "numRows": 10,
+      "numSeats": 15
+    },
+    {
+      "name": "B",
+      "numRows": 8,
+      "numSeats": 12
+    }
+  ],
+  "events": [
+    {
+      "date": "2022-02-02",
+      "hallName": "B",
+      "eventName": "Snowwhite"
+    },
+    {
+      "date": "2022-01-01",
+      "hallName": "B",
+      "eventName": "Snowwhite"
+    }
+  ],
+  "bookedTickets": [
+    {
+      "row": 5,
+      "seat": 10,
+      "note": "Special request",
+      "date": "2022-02-02",
+      "eventName": "Event X",
+      "hallName":"B"
+    }
+  ],
+  "purchasedTickets": [
+    {
+      "row": 6,
+      "seat": 12,
+      "eventName": "Event Z",
+      "hallName": "A",
+      "date": "2022-01-01"
+    }
+  ]
+}

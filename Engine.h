@@ -7,14 +7,14 @@
 
 class  Engine {
 private:
-    static const size_t commandsCount = 14;
+    static const size_t commandsCount = 15;
     const string validCommands[commandsCount] = 
-    {"OPEN", "CLOSE", "SAVE", "SAVEAS", "HELP", "EXIT", "ADDEVENT", "FREESEATS", "BOOK", "UNBOOK", "BUY", "BOOKINGS", "CHECK", "REPORT"};
+    {"OPEN", "CLOSE", "SAVE", "SAVEAS", "HELP", "EXIT", "ADDEVENT", "FREESEATS", "BOOK", "UNBOOK", "BUY", "BOOKINGS", "CHECK", "REPORT", "MOSTWATCHED"};
 
     std::fstream currentFile; //file
     string currFileName;    //file name
     
-    Theater* theater;
+    static Theater* theater;
     static bool endProgram;  //if the program should end
     bool unsavedChanges; // when closing file
 
@@ -43,6 +43,7 @@ public:
     Engine& operator=(Engine&&) = delete;
 
     static Engine& getInstance(); //returning the instance of Engine
+    Theater* getTheater() const;
 
     void start(); //the main loop for receiving commands and executing them
 };

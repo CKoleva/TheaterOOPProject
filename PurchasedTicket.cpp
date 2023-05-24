@@ -1,5 +1,6 @@
 #include "PurchasedTicket.h"
 #include <iomanip>
+#include <iostream>
 
 std::string PurchasedTicket::generateUniqueCode(size_t row, size_t seat) {
     // Generate a random number for the unique identifier           !!Used code!!

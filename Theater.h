@@ -54,8 +54,9 @@ public:
     void displayBookings(const Date& date) const;
     void displayBookings(const string& eventName) const;
     void displayAvailableSeats(const string& eventName, const Date& date) const;
-    // void report(const Date& from, const Date& to) const;
-    // void report(const Date& from, const Date& to, const string& hallName) const;
+    void report(const Date& from, const Date& to) const;
+    void report(const Date& from, const Date& to, const string& hallName) const;
+    void mostWatchedEventsStatistic() const;
 
     //friend function for FileReader
     friend void makeAllTicketsFree(Theater* theater);

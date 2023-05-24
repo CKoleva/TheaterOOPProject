@@ -1,6 +1,6 @@
 #include "FileWriter.h"
 
-void FileWriter::saveTheaterData(const Theater* theater, fstream& file) {
+void FileWriter::saveTheaterData(Theater* theater, fstream& file) {
     json jsonData;
 
     jsonData["halls"] = convertHallsToJson(theater);
@@ -11,7 +11,7 @@ void FileWriter::saveTheaterData(const Theater* theater, fstream& file) {
     writeJsonToFile(jsonData, file);
 }
 
-json FileWriter::convertHallsToJson(const Theater* theater) {
+json FileWriter::convertHallsToJson(Theater* theater) {
     json hallsData;
 
     for (const auto& hall : theater->getHalls()) {
@@ -25,7 +25,7 @@ json FileWriter::convertHallsToJson(const Theater* theater) {
     return hallsData;
 }
 
-json FileWriter::convertEventsToJson(const Theater* theater) {
+json FileWriter::convertEventsToJson(Theater* theater) {
     json eventsData;
 
     for (const auto& event : theater->getEvents()) {
@@ -33,36 +33,36 @@ json FileWriter::convertEventsToJson(const Theater* theater) {
         eventData["date"] = event->getDate().serialize();
         eventData["hallName"] = event->getHallName();
         eventData["eventName"] = event->getName();
-        eventsData.push_back(eventData);
+        eventsData.push_back(std::move(eventData));
     }
 
     return eventsData;
 }
 
-json FileWriter::convertBookedTicketsToJson(const Theater* theater) {
+json FileWriter::convertBookedTicketsToJson(Theater* theater) {
     json ticketsData;
 
     for (const auto& ticket : theater->getBookedTickets()) {
         json ticketData = convertTicketToJson(ticket);
-        ticketData.push_back(ticket->getNote());
-        ticketsData.push_back(ticketData);
+        ticketData["note"] = ticket->getNote();
+        ticketsData.push_back(std::move(ticketData));
     }
 
     return ticketsData;
 }
 
-json FileWriter::convertPurchasedTicketsToJson(const Theater* theater) {
+json FileWriter::convertPurchasedTicketsToJson(Theater* theater) {
     json ticketsData;
 
     for (const auto& ticket : theater->getPurchasedTickets()) {
         json ticketData = convertTicketToJson(ticket);
-        ticketsData.push_back(ticketData);
+        ticketsData.push_back(std::move(ticketData));
     }
 
     return ticketsData;
 }
 
-json FileWriter::convertTicketToJson(const Ticket* ticket) {
+json FileWriter::convertTicketToJson(Ticket* ticket) {
     json ticketData;
     ticketData["row"] = ticket->getRow();
     ticketData["seat"] = ticket->getSeat();

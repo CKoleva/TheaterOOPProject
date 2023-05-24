@@ -1,5 +1,9 @@
 #include "Engine.h"
 
+Theater* Engine::getTheater() const {
+    return this->theater;
+}
+
 bool Engine::endProgram = false;
 
 Engine::~Engine() {         //how is the theater created and where
@@ -10,8 +14,9 @@ Engine::~Engine() {         //how is the theater created and where
     }
 }
 
+Theater* Engine::theater = Theater::getInstance();
+
 Engine::Engine() {          //default constructor
-    Theater* theater = Theater::getInstance();
     unsavedChanges = false;
     currFileName = "";
 }
@@ -33,7 +38,6 @@ void Engine::start() {
         try
         {
             this->execute(cmdl);
-            std::cout << "executed";
         }
         catch(const std::bad_alloc& mmry)
         {
@@ -105,9 +109,10 @@ void Engine::execute(CommandLine cmdl) {
         string hallName = cmdl.getArgv()[2];
         string eventName = cmdl.getArgv()[3];
         theater->addEvent(date, hallName, eventName);
+        makeAllTicketsFree(this->theater);
         unsavedChanges = true;
 
-        std::cout << "Event " + eventName + " has been successfully added.\n";
+        std::cout << "Event \"" + eventName + "\" has been successfully added.\n";
     }
     else if (command == "FREESEATS")
     {
@@ -117,7 +122,7 @@ void Engine::execute(CommandLine cmdl) {
         }
 
         Date date(cmdl.getArgv()[1]);
-        string eventName = cmdl.getArgv()[3];
+        string eventName = cmdl.getArgv()[2];
         theater->displayAvailableSeats(eventName, date);
     }
     else if (command == "BOOK")
@@ -219,7 +224,7 @@ void Engine::execute(CommandLine cmdl) {
 
         Date dateFrom(cmdl.getArgv()[1]);
         Date dateTo(cmdl.getArgv()[2]);
-        // theater->report(dateFrom, dateTo);
+        theater->report(dateFrom, dateTo);
     }
     else if (command == "REPORT" && cmdl.getSize() == 4)
     {
@@ -231,7 +236,16 @@ void Engine::execute(CommandLine cmdl) {
         Date dateFrom(cmdl.getArgv()[1]);
         Date dateTo(cmdl.getArgv()[2]);
         string hallName = cmdl.getArgv()[3];
-        // theater->report(dateFrom, dateTo, hallName);
+        theater->report(dateFrom, dateTo, hallName);
+    }
+    else if (command == "MOSTWATCHED" && cmdl.getSize() == 1)
+    {
+        if (!openedFile())
+        {
+            return;
+        }
+
+        theater->mostWatchedEventsStatistic();
     }
 }
 
@@ -299,6 +313,13 @@ bool Engine::isValid(CommandLine cmdl) const {
         std::cout << "Invalid number of arguments!. Type \"help\" to see all supported commands.\n";
         return false;
     }
+
+    if ((command == "MOSTWATCHED") && argc != 1)
+    {
+        std::cout << "Invalid number of arguments!. Type \"help\" to see all supported commands.\n";
+        return false;
+    }
+    
     
     return true;
 }
@@ -319,6 +340,9 @@ void Engine::close() {
         std::cout << "There are unsaved changes. Are you sure you want to close the currently opened file?\n" 
         << "Type \'y\' to close or \'n\' to cancel.\n";
     }
+    else  {
+        std::cout << "Successfully closed \"" + currFileName + "\".\n";
+    }
     char answer;
     bool validAnswer = false;
 
@@ -333,11 +357,13 @@ void Engine::close() {
             unsavedChanges = false;
             currentFile.close();
             theater->free();
+            std::cout << "Successfully closed \"" + currFileName + "\".\n";
             //close !! handle memory !! unsavedChanges = false !! validAnswer = true
         }
         else if (toupper(answer) == 'N')
         {
             validAnswer = true;
+            std::cout << "Operation canceled.\n";
         }
         else {
             std::cout << "Invalid answer. Type \'y\' to close or \'n\' to cancel.\n";
@@ -348,18 +374,18 @@ void Engine::close() {
 bool Engine::openedFile() const {
     if (!currentFile.is_open())
     {
-        throw std::invalid_argument("No file is currently opened.\n");
+        throw std::invalid_argument("No file is currently opened.");
     }
 
     return true;
 }
 
-int Engine::findFileName(const string& filePath) const {
+int Engine::findFileName(const string& filePath) const {    
     int idx = filePath.find_last_of('\\');
 
     if (idx == std::string::npos)
     {
-        return idx = -1;
+        return 0;
     }
 
     return idx + 1;
@@ -400,24 +426,40 @@ void Engine::open(string& filePath) {
     }
 
     currFileName = fileName;
-    currentFile = std::fstream(fileName);               //is this valid
-    if (!currentFile.is_open())
-    {
-        std::cout << "Failed to open " << fileName + ".\n";
+
+    // Check if the file exists
+    std::ifstream existingFile(fileName);
+    bool fileExists = existingFile.good();
+    existingFile.close();
+
+    if (!fileExists) {
+        // Create a new empty file
+        currentFile.open(fileName, std::ios::out);
+        if (!currentFile.is_open()) {
+            std::cout << "Failed to create \"" << fileName << "\".\n";
+            return;
+        }
+        std::cout << "Successfully created \"" << currFileName << "\".\n";
+    } else {
+        // Open the existing file
+        currentFile.open(fileName);
+        if (!currentFile.is_open()) {
+            std::cout << "Failed to open \"" << fileName << "\".\n";
+            return;
+        }
+        std::cout << "Successfully opened \"" << currFileName << "\".\n";
+        FileReader::loadTheaterData(this->theater, currentFile);
     }
-    
-    std::cout << "Successfully opened " << currFileName + ".\n";
-    FileReader::loadTheaterData(theater, currentFile);
 }
 
 void Engine::help() {
     std::cout << "The following commands are supported:\n"
-    << "open <file>	opens <file>\n" 
+    << "open <file>	        opens <file>\n" 
     << "close			closes currently opened file\n" 
     << "save			saves the currently open file\n"
-    << "saveas <file>	saves the currently open file in <file>\n"
+    << "saveas <file>	        saves the currently open file in <file>\n"
     << "help			prints this information\n"
-    << "exit			exists the program\n"
+    << "exit			exists the program\n\n"
     << "addEvent <date> <hall> <name>\n"
     << "freeseats <date> <name>\n"
     << "book <row> <seat> <date> <name> <note>\n"
@@ -426,29 +468,43 @@ void Engine::help() {
     << "bookings [<date>] [<name>]\n"
     << "check <code>\n"
     << "report <from> <to> [<hall>]\n"
-    << "\nNote: Arguments in \'[]\' are optional.\n";
+    << "\nNote: Arguments in \'[]\' are optional.\n\n";
 }
 
 void Engine::save() {
-    FileWriter::saveTheaterData(theater, currentFile);
-    std::cout << "Successfully saved " << currFileName << '\n';
+    currentFile.close();
+    fstream inOutMode(currFileName, std::ios::out);
+    if (!inOutMode.is_open())
+    {
+        std::cout << "Failed save \"" << currFileName << "\".\n";
+        return;
+    }
+
+    FileWriter::saveTheaterData(theater, inOutMode);
+    std::cout << "Successfully saved \"" << currFileName << "\".\n";
+
+    inOutMode.close();
+    currentFile.open(currFileName);
 }
 
-void Engine::saveAs(string& filePath) {                 //should the current file be closed
+void Engine::saveAs(string& filePath) {                 
     string fileName = checkFileName(filePath);
     if (fileName == "")
     {
         return;
     }
+    currentFile.close();
 
-    fstream newFile(fileName);
+    fstream newFile(fileName, std::ios::out);
     if (!newFile.is_open())
     {
-        std::cout << "Failed to open and save " << fileName << '\n';
+        std::cout << "Failed to open and save \"" << fileName << "\".\n";
         return;
     }
     
     FileWriter::saveTheaterData(theater, newFile);
-    std::cout << "Successfully saved " << fileName << '\n';
-    newFile.close();        
+    std::cout << "Successfully saved \"" << fileName << "\".\n";
+
+    newFile.close();  
+    currentFile.open(currFileName);      
 }
