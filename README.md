@@ -26,6 +26,28 @@ The program depends on the following libraries:
 
 - [Nlohmann JSON](https://github.com/nlohmann/json): A C++ library for JSON serialization and deserialization.
 
+## Future Development and Enhancements
+
+### Seat Selection
+
+Enhance the ticket booking process by implementing a seat selection feature. Users will be able to visually select seats from an interactive seat map during the booking process.
+
+### Ticket Pricing
+
+Introduce dynamic ticket pricing to provide flexible pricing options for events. The system will calculate ticket prices based on various factors such as event popularity, seat location, or special promotions.
+
+### User Authentication
+
+Enhance the system's security and user management capabilities by implementing a user authentication system. Users will be required to log in with credentials, and different user roles (e.g., administrators, employees, customers) will have different levels of access and privileges.
+
+### Ticket QR Code
+
+Integrate a QR code generation feature for purchased tickets. Each ticket will have a unique QR code, and users can conveniently present their tickets for validation by scanning the QR code.
+
+### Event Types
+
+Enhance the system by introducing different types of events. Users will be able to specify the type of event (e.g., movie, play, concert) during event creation, providing more variety and flexibility in managing different types of performances.
+
 ## Example Data
 
 To provide a starting point and demonstrate the functionality of the Information System Program, you can use the following example JSON data:
