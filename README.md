@@ -70,12 +70,17 @@ To provide a starting point and demonstrate the functionality of the Information
     {
       "date": "2022-02-02",
       "hallName": "B",
-      "eventName": "Snowwhite"
+      "eventName": "Event X"
+    },
+    {
+      "date": "2022-02-02",
+      "hallName": "A",
+      "eventName": "Event Y"
     },
     {
       "date": "2022-01-01",
       "hallName": "B",
-      "eventName": "Snowwhite"
+      "eventName": "Event Z"
     }
   ],
   "bookedTickets": [
@@ -93,7 +98,7 @@ To provide a starting point and demonstrate the functionality of the Information
       "row": 6,
       "seat": 12,
       "eventName": "Event Z",
-      "hallName": "A",
+      "hallName": "B",
       "date": "2022-01-01"
     }
   ]
