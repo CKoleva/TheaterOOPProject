@@ -1,0 +1,26 @@
+var class_theater =
+[
+    [ "~Theater", "class_theater.html#a8a7dbc158ad285879f18716628ecceb5", null ],
+    [ "addEvent", "class_theater.html#add60fd06d3e0de28c7847885e8de26fe", null ],
+    [ "addFree", "class_theater.html#a4a699df878d0dd864362a281b2eb4a0a", null ],
+    [ "addHall", "class_theater.html#a6f5336236047922b0b18b707f3bbb80f", null ],
+    [ "bookTicket", "class_theater.html#a4b0a25bef6560cde46506717d3393f9d", null ],
+    [ "check", "class_theater.html#aaa0ae4af713a4cf9ef913d7301b81bd7", null ],
+    [ "displayAvailableSeats", "class_theater.html#af80a1641720225af93bc0ab5ec51378b", null ],
+    [ "displayBookings", "class_theater.html#a115053a5775a7009ba10abe25aaf6a70", null ],
+    [ "displayBookings", "class_theater.html#a5392e01c49c51a032c915d008a1908d5", null ],
+    [ "displayBookings", "class_theater.html#ae1db4f084caae3095875193f43f009af", null ],
+    [ "free", "class_theater.html#aab989d716a1b2b99cfc1ca5220dd91eb", null ],
+    [ "getBookedTickets", "class_theater.html#a92c0431ca3d0b7bc65d3d8162b61b728", null ],
+    [ "getEvents", "class_theater.html#a729e503ac838dc3073f7e64b978b0e33", null ],
+    [ "getFreeTickets", "class_theater.html#a4e07fe572f4d98ce9bc8da4e2cb84225", null ],
+    [ "getHalls", "class_theater.html#a29ba3cbd2891d6362b31e88dd9a06584", null ],
+    [ "getPurchasedTickets", "class_theater.html#ad9ee0f84121705aa365cc187dbbb66a0", null ],
+    [ "mostWatchedEventsStatistic", "class_theater.html#a51e5d79463f6dbccc64429b4c710faca", null ],
+    [ "purchaseTicket", "class_theater.html#ad2e4c4b41afc5b314f1aef7d176c36a1", null ],
+    [ "report", "class_theater.html#a8d734f29020f7194d0ae4b924dc6b27b", null ],
+    [ "report", "class_theater.html#a0dc6265a7743ea2cd2531944327e8366", null ],
+    [ "unbookTicket", "class_theater.html#a2be319818bb8edcfb36c1b446de31dc9", null ],
+    [ "FileReader", "class_theater.html#adffc0f3783ef498cd7705f60f8590290", null ],
+    [ "makeAllTicketsFree", "class_theater.html#a3d36036d0e28acf56c70900d38d64348", null ]
+];
