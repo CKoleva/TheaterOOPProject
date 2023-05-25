@@ -24,7 +24,3 @@ void Ticket::printTicket() const {
 Ticket* Ticket::clone() {
     return new Ticket(*this);
 }
-
-bool Ticket::operator==(const Ticket& other) {
-    return this->event == other.event && this->row == other.row && this->seat == other.seat;
-}

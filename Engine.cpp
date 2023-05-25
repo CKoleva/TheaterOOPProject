@@ -341,7 +341,10 @@ void Engine::close() {
         << "Type \'y\' to close or \'n\' to cancel.\n";
     }
     else  {
+        currentFile.close();
+        theater->free();
         std::cout << "Successfully closed \"" + currFileName + "\".\n";
+        return;
     }
     char answer;
     bool validAnswer = false;
