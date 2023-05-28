@@ -111,7 +111,7 @@ void CommandLine::parseCommandLine(string commandLine) {
 }
 
 
-vector<string> CommandLine::getArgv() {
+vector<string> CommandLine::getArgv() const {
     return this->argv;
 }
 

@@ -63,5 +63,5 @@ public:
      * @brief Gets the vector of arguments.
      * @return The vector of arguments.
      */
-    vector<string> getArgv();
+    vector<string> getArgv() const;
 };
