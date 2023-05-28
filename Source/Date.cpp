@@ -61,11 +61,12 @@ const string Date::serialize() const {
 
 void Date::deserialize(const string& data) {
     stringstream ss(data);
-    char delimiter;
-    ss >> this->year >> delimiter >> this->month >> delimiter >> this->day;
+    char delimiter1;
+    char demiliter2;
+    ss >> this->year >> delimiter1 >> this->month >> demiliter2 >> this->day;
 
     // Check if the date string is valid
-    if (ss.fail() || delimiter != '-' || !isValidDate()) {
+    if (ss.fail() || delimiter1 != '-' || demiliter2 != '-' || !isValidDate()) {
         throw std::runtime_error("Invalid date string: " + data);
     }
 }

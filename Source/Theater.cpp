@@ -45,7 +45,7 @@ const std::vector<PurchasedTicket*>& Theater::getPurchasedTickets() const {
 }
 
 Event* Theater::findEvent(const string& eventName, const Date& date) const {
-    for (const auto& e : events) {
+    for (Event* e : events) {
         if (e->getName() == eventName && e->getDate() == date) {
             return e;
         }
@@ -55,7 +55,7 @@ Event* Theater::findEvent(const string& eventName, const Date& date) const {
 }
 
 Hall* Theater::findHallByName(const std::string& name) const {
-    for (const auto& hall : halls) {
+    for (Hall* hall : halls) {
         if (hall->getName() == name) {
             return hall;
         }
@@ -81,6 +81,7 @@ bool Theater::isSeatAvailable(const Event& event, const size_t row, const size_t
     if (row < 1 || row > hall->getNumberOfRows() || seat < 1 || seat > hall->getNumberOfSeats()) {
         throw std::runtime_error("Invalid seat.");
     }
+    hall = nullptr;
 
     // Check if the seat is available
     for (const Ticket* ticket : freeTickets) {
@@ -107,6 +108,7 @@ void Theater::addEvent(const Date& date, const std::string& hallName, const std:
     if (hall == nullptr) {
         throw std::runtime_error("Hall not found.");
     }
+    hall = nullptr;
 
     // Check if the hall is free on this date or if this event is already scheduled on this day in another hall  
     for (const Event* event : events) {
@@ -129,7 +131,6 @@ void Theater::addEvent(const Date& date, const std::string& hallName, const std:
 
 void Theater::bookTicket(const size_t row, const size_t seat, const Date& date, const string& eventName, const string note) {
     Event* foundEvent = findEvent(eventName, date);
-
     if (isSeatAvailable(*foundEvent, row, seat)) {
         // Seat is available, create a new BookedTicket object
         BookedTicket* toBook = new BookedTicket(row, seat, *foundEvent, note);
@@ -225,7 +226,6 @@ void Theater::check(const string& code) const {
         || letterD != 'D'
         || suffix[0] == 0)
     {
-        std::cout << "here\n"; 
         throw std::invalid_argument("Invalid code format");
     }
 
@@ -243,7 +243,7 @@ void Theater::displayAvailableSeats(const string& eventName, const Date& date) c
 
     std::cout << "Free seats for event \"" << foundEvent->getName() << "\" on " << date.serialize() << ".\n";
     
-    for (const auto& ticket : freeTickets) {
+    for (Ticket* ticket : freeTickets) {
         if (ticket->getEvent() == *foundEvent && ticket->getEvent().getDate() == date) {
             ticket->printTicket();
         }
@@ -253,38 +253,54 @@ void Theater::displayAvailableSeats(const string& eventName, const Date& date) c
 void Theater::displayBookings(const Date& date, const string& eventName) const {       
     // Find the event
     Event* foundEvent = findEvent(eventName, date);
-
+    bool bookedTFound = false;
     std::cout << "Booked tickets for event \"" << foundEvent->getName() << "\" on " << date.serialize() << ":\n";
     
-    for (const auto& ticket : bookedTickets) {
+    for (BookedTicket* ticket : bookedTickets) {
         if (ticket->getEvent() == *foundEvent && ticket->getEvent().getDate() == date) {
+            bookedTFound = true;
             ticket->printTicket();
         }
+    }
+    if (!bookedTFound)
+    {
+        std::cout << "No booked tickets.\n";
     }
 }
 
 void Theater::displayBookings(const Date& date) const {
-    std::cout << "Bookings on " << date.serialize() << ":" << std::endl;            // needes check first
-                                                                                    
-    for (const auto& ticket : bookedTickets) {                                      //sorted by events?
+    std::cout << "Bookings on " << date.serialize() << ":" << std::endl;            
+
+    bool bookedTFound = false;                                                                          
+    for (BookedTicket* ticket : bookedTickets) {                                      
         if (ticket->getEvent().getDate() == date) {
+            bookedTFound = true;
             std::cout << "Event \"" + ticket->getEvent().getName() + "\", "; 
             ticket->printTicket();
         }
+    }
+    if (!bookedTFound)
+    {
+        std::cout << "No booked tickets.\n";
     }
 }
 
 void Theater::displayBookings(const string& eventName) const {
     std::cout << "Bookings for \"" + eventName + "\":\n";
 
+    bool bookedTFound = false;
     for (const auto& ticket : bookedTickets)
     {
         if(ticket->getEvent().getName() == eventName) {
+            bookedTFound = true;
             std::cout << "(" + ticket->getEvent().getDate().serialize() + ") ";
             ticket->printTicket();
         }
     }
-    
+    if (!bookedTFound)
+    {
+        std::cout << "No booked tickets.\n";
+    }
 }
 
 

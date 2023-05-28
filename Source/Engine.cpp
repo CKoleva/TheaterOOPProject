@@ -6,7 +6,7 @@ Theater* Engine::getTheater() const {
 
 bool Engine::endProgram = false;
 
-Engine::~Engine() {         //how is the theater created and where
+Engine::~Engine() {         
     theater = nullptr;
     Theater::deleteTheater();
     if (currentFile.is_open())
@@ -134,8 +134,15 @@ void Engine::execute(CommandLine cmdl) {
             return;
         }
 
-        size_t row = std::stoi(cmdl.getArgv()[1]);
-        size_t seat = std::stoi(cmdl.getArgv()[2]);
+        size_t row = 0;
+        size_t seat = 0;
+        try
+        {
+            row = std::stoi(cmdl.getArgv()[1]);
+            seat = std::stoi(cmdl.getArgv()[2]);
+        }
+        catch(const std::invalid_argument& notAnInteger) {}
+
         Date date(cmdl.getArgv()[3]);
         string eventName = cmdl.getArgv()[4];
         string note = cmdl.getArgv()[5];
@@ -151,8 +158,15 @@ void Engine::execute(CommandLine cmdl) {
             return;
         }
 
-        size_t row = std::stoi(cmdl.getArgv()[1]);
-        size_t seat = std::stoi(cmdl.getArgv()[2]);
+        size_t row = 0;
+        size_t seat = 0;
+        try
+        {
+            row = std::stoi(cmdl.getArgv()[1]);
+            seat = std::stoi(cmdl.getArgv()[2]);
+        }
+        catch(const std::invalid_argument& notAnInteger) {}
+        
         Date date(cmdl.getArgv()[3]);
         string eventName = cmdl.getArgv()[4];
         theater->unbookTicket(row, seat, date, eventName);
@@ -167,8 +181,15 @@ void Engine::execute(CommandLine cmdl) {
             return;
         }
 
-        size_t row = std::stoi(cmdl.getArgv()[1]);
-        size_t seat = std::stoi(cmdl.getArgv()[2]);
+        size_t row = 0;
+        size_t seat = 0;
+        try
+        {
+            row = std::stoi(cmdl.getArgv()[1]);
+            seat = std::stoi(cmdl.getArgv()[2]);
+        }
+        catch(const std::invalid_argument& notAnInteger) {}
+
         Date date(cmdl.getArgv()[3]);
         string eventName = cmdl.getArgv()[4];
         theater->purchaseTicket(row, seat, date, eventName);
@@ -209,7 +230,7 @@ void Engine::execute(CommandLine cmdl) {
         }
         catch(const std::runtime_error& notADate)
         {
-            theater->displayBookings(cmdl.getArgv()[1]);            //is this valid
+            theater->displayBookings(cmdl.getArgv()[1]);            
             return;
         }
 
